@@ -116,7 +116,11 @@ Also, version 0.2 takes into account the radius of the data points when placing 
         }
         ctx.restore();
 
-        function drawLabel(contents, x, y) {
+        function drawLabel(contents, bx, by) {
+	    var x = bx;
+	    var y = by;
+	    var lx = x;
+	    var ly = y;
             var radius = series.points.radius;
             if (!series.canvasRender) {
                 var elem = $('<div class="' + series.labelClass + '">' + contents + '</div>').css({ position: 'absolute' }).appendTo(plot.getPlaceholder());
@@ -153,23 +157,31 @@ Also, version 0.2 takes into account the radius of the data points when placing 
                     case "above":
                         x = x - tWidth / 2;
                         y -= (series.cPadding + radius);
+		        ly = y;
                         ctx.textBaseline = "bottom";
                         break;
                     case "left":
                         x -= tWidth + series.cPadding + radius;
+		        lx = bx - series.cPadding;
                         ctx.textBaseline = "middle";
                         break;
                     case "right":
                         x += series.cPadding + radius;
+		        lx = bx + series.cPadding;
                         ctx.textBaseline = "middle";
                         break;
                     default:
                         ctx.textBaseline = "top";
                         y += series.cPadding + radius;
+		        ly = y;
                         x = x - tWidth / 2;
 
                 }
                 ctx.fillText(contents, x, y);
+	        ctx.beginPath();
+	        ctx.moveTo(bx, by);
+	        ctx.lineTo(lx, ly);
+	        ctx.stroke();
             }
         }
 
